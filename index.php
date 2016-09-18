@@ -1,28 +1,37 @@
 <?php
-
 header("Access-Control-Allow-Origin: *");
 
-$response = '{
-    "glossary": {
-        "title": "example glossary",
-		"GlossDiv": {
-            "title": "S",
-			"GlossList": {
-                "GlossEntry": {
-                    "ID": "SGML",
-					"SortAs": "SGML",
-					"GlossTerm": "Standard Generalized Markup Language",
-					"Acronym": "SGML",
-					"Abbrev": "ISO 8879:1986",
-					"GlossDef": {
-                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
-						"GlossSeeAlso": ["GML", "XML"]
-                    },
-					"GlossSee": "markup"
-                }
-            }
-        }
-    }
-}';
+$response = array();
 
-echo $response;
+// helper function
+// get data from url
+function getAndProcessData($url) {
+
+    global $response;
+
+    $xml = simplexml_load_file($url);
+
+    $title = (string) $xml->channel->item[0]->title;
+    $link = (string) $xml->channel->item[0]->link;
+    $pubDate = (string) $xml->channel->item[0]->pubDate;
+    $allWeeklies = str_replace("feed","home",$url);
+
+    $data['title'] = $title;
+    $data['link'] = $link;
+    $data['pubDate'] = date("d M, Y", strtotime($pubDate));
+    $data['allWeeklies'] = $allWeeklies;
+
+    array_push($response, $data);
+}
+
+
+// get ANDROID WEEKLIES data
+$androidWeeklyUrl = "http://us2.campaign-archive1.com/feed?u=887caf4f48db76fd91e20a06d&id=4eb677ad19";
+getAndProcessData($androidWeeklyUrl);
+
+// get ANDROID WEEKLIES data
+$kotlinWeeklyUrl = "http://us12.campaign-archive1.com/feed?u=f39692e245b94f7fb693b6d82&id=93b2272cb6";
+getAndProcessData($kotlinWeeklyUrl);
+
+
+echo json_encode($response);
