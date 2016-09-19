@@ -33,5 +33,4 @@ getAndProcessData($androidWeeklyUrl);
 $kotlinWeeklyUrl = "http://us12.campaign-archive1.com/feed?u=f39692e245b94f7fb693b6d82&id=93b2272cb6";
 getAndProcessData($kotlinWeeklyUrl);
 
-
 echo json_encode($response);
